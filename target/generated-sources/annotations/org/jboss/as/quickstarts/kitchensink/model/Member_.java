@@ -9,6 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Member_ {
 
 	public static volatile SingularAttribute<Member, String> phoneNumber;
+	public static volatile SingularAttribute<Member, String> address;
 	public static volatile SingularAttribute<Member, String> name;
 	public static volatile SingularAttribute<Member, Long> id;
 	public static volatile SingularAttribute<Member, String> email;
