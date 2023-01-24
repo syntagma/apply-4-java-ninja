@@ -47,6 +47,14 @@ public class MemberRepository {
         return em.createQuery(criteria).getSingleResult();
     }
 
+    public Member findByName(String name) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> criteria = cb.createQuery(Member.class);
+        Root<Member> member = criteria.from(Member.class);
+        criteria.select(member).where(cb.equal(member.get("name"), name));
+        return em.createQuery(criteria).getSingleResult();
+    }
+
     public List<Member> findAllOrderedByName() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Member> criteria = cb.createQuery(Member.class);
