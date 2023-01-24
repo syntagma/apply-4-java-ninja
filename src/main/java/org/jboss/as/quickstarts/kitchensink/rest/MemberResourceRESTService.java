@@ -107,7 +107,13 @@ public class MemberResourceRESTService {
         } catch (ValidationException e) {
             // Handle the unique constrain violation
             Map<String, String> responseObj = new HashMap<>();
-            responseObj.put("email", "Email taken");
+            switch (e.getMessage()){
+                case "Unique Name Violation": responseObj.put("name", "Name taken");
+                    break;
+                case "Unique Email Violation": responseObj.put("email", "Email taken");
+                    break;
+                default: break;
+            }
             builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
         } catch (Exception e) {
             // Handle generic exceptions
@@ -145,6 +151,10 @@ public class MemberResourceRESTService {
         if (emailAlreadyExists(member.getEmail())) {
             throw new ValidationException("Unique Email Violation");
         }
+
+        if (nameAlreadyExists(member.getName())) {
+            throw new ValidationException("Unique Name Violation");
+        }
     }
 
     /**
@@ -177,6 +187,23 @@ public class MemberResourceRESTService {
         Member member = null;
         try {
             member = repository.findByEmail(email);
+        } catch (NoResultException e) {
+            // ignore
+        }
+        return member != null;
+    }
+
+    /**
+     * Checks if a member with the same name  is already registered. This is the only way to easily capture the
+     * "@UniqueConstraint(columnNames = "name")" constraint from the Member class.
+     *
+     * @param name The name to check
+     * @return True if the name already exists, and false otherwise
+     */
+    public boolean nameAlreadyExists(String name) {
+        Member member = null;
+        try {
+            member = repository.findByName(name);
         } catch (NoResultException e) {
             // ignore
         }
